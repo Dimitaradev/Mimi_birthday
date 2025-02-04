@@ -112,7 +112,7 @@
     /* Стилове за интерактивните "горещи" точки */
     .hotspot {
       position: absolute;
-      /* Use relative units with minimum sizes */
+      /* Използваме относителни единици с минимални размери */
       width: 15vw;
       height: 15vw;
       min-width: 100px;
@@ -254,18 +254,24 @@
       showPressSign(hotspotOrder[0]);
     });
 
+    // Функция, която обработва кликовете върху горещите точки
     function hotspotClick(e) {
       const clickedId = e.currentTarget.id;
-      if (!discovered.includes(clickedId)) {
-        discovered.push(clickedId);
-        // Скриваме етикета "Натисни ме" на текущата точка
-        hidePressSign(clickedId);
-        // Показваме историята, съответстваща на поредния етап
-        showChapter(chapters[discovered.length - 1]);
-        // Ако има следваща точка, показваме нейния "Натисни ме" етикет
-        if (discovered.length < hotspotOrder.length) {
-          showPressSign(hotspotOrder[discovered.length]);
-        }
+
+      // Проверяваме дали кликнатата точка е следващата в реда.
+      if (clickedId !== hotspotOrder[discovered.length]) {
+        // Ако не е, игнорирайте клика или покажете съобщение, ако желаете.
+        return;
+      }
+
+      discovered.push(clickedId);
+      hidePressSign(clickedId);
+      // Използваме реда на кликванията, за да изберем правилната "глава"
+      showChapter(chapters[discovered.length - 1]);
+
+      // Ако има следваща точка, показваме нейния "Натисни ме" етикет
+      if (discovered.length < hotspotOrder.length) {
+        showPressSign(hotspotOrder[discovered.length]);
       }
     }
 
@@ -285,6 +291,7 @@
       }
     ];
 
+    // Функция за показване на главата (историята)
     function showChapter(chapter) {
       storyTitle.textContent = chapter.title;
       storyText.textContent = chapter.text;
