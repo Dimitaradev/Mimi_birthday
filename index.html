@@ -1,4 +1,4 @@
-<!DOCTYPE html> 
+<!DOCTYPE html>
 <html lang="bg">
 <head>
   <meta charset="UTF-8" />
@@ -17,7 +17,7 @@
       width: 100%;
       min-height: 100%;
       font-family: 'Montserrat', sans-serif;
-      overflow-x: hidden; /* Prevent horizontal scroll while allowing vertical scrolling */
+      overflow-x: hidden;
     }
     
     /* Контейнер за сцената с градиентен фон */
@@ -29,7 +29,7 @@
       overflow: hidden;
     }
     
-    /* Стилове за паралакс слоевете */
+    /* Паралакс слоеве */
     .layer {
       position: absolute;
       width: 110%;
@@ -61,23 +61,28 @@
       opacity: 0.9;
     }
     
-    /* Стилове за припокриващите се прозорци (оверлеи) */
+    /* Основни стилове за оверлеите */
     .overlay {
-      position: absolute;
-      z-index: 10;
+      position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      right: 0;
+      bottom: 0;
+      z-index: 10;
       background: rgba(0,0,0,0.8);
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: center; /* default: center chapters */
       align-items: center;
       text-align: center;
-      color: #fff;
       padding: 20px;
+      overflow-y: auto;
       transition: opacity 0.5s;
+    }
+    /* When showing the final wish, align from the top */
+    .overlay.final-message {
+      justify-content: flex-start;
+      padding-top: 40px;  /* adjust as needed */
     }
     .overlay.hidden {
       opacity: 0;
@@ -109,25 +114,36 @@
       background: #ff3e70;
     }
     
-    /* Add this to your existing CSS */
+    /* Стилове за финалното пожелание */
     .final-wish-text {
-      font-size: 20px; /* Normal size */
-      line-height: 1.5; /* Comfortable spacing between lines */
-      margin: 0 auto; /* Center the text block */
-      padding: 20px; /* Add some padding */
-      text-align: center; /* Align text to the left */
+      font-size: 20px;
+      line-height: 1.5;
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 90%;
+      text-align: center;
     }
-    
     .final-wish-text p {
-      font-size: 1em; /* Ensure paragraphs are normal size */
-      margin-bottom: 15px; /* Space between paragraphs */
-      color: #fff; /* Ensure text is white (or any color you prefer) */
+      font-size: 20px;
+      margin-bottom: 1em;
+      color: #fff;
+    }
+    @media (max-width: 480px) {
+      .final-wish-text {
+        padding: 15px;
+        font-size: 0.9rem;
+      }
+      .overlay h1 {
+        font-size: 2.5em;
+      }
+      .overlay p {
+        font-size: 1.2em;
+      }
     }
     
     /* Стилове за интерактивните "горещи" точки */
     .hotspot {
       position: absolute;
-      /* Използваме относителни единици с минимални размери */
       width: 15vw;
       height: 15vw;
       min-width: 100px;
@@ -135,7 +151,7 @@
       border: 3px solid #ff6f91;
       border-radius: 50%;
       cursor: pointer;
-      display: none; /* Първоначално скрити */
+      display: none;
       overflow: hidden;
       transition: transform 0.3s;
       z-index: 5;
@@ -143,43 +159,33 @@
     .hotspot:hover {
       transform: scale(1.2);
     }
-    /* Стилизиране на изображението вътре в горещата точка */
     .hotspot img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
-    /* Стил за етикета "Натисни ме" извън снимката */
     .press-sign {
       position: absolute;
-      top: 100%; /* под контейнера */
+      top: 100%;
       left: 50%;
-      transform: translate(-50%, 10px); /* леко разстояние надолу */
+      transform: translate(-50%, 10px);
       background: rgba(255, 255, 255, 0.9);
       padding: 4px 10px;
       border-radius: 5px;
       font-size: 0.8em;
       color: #283c86;
       white-space: nowrap;
-      display: none; /* първоначално скрит, ще се показва за активната точка */
+      display: none;
     }
-    /* Добавяне на стрелка чрез псевдо-елемент към етикета */
     .press-sign::before {
-      content: "↑";
+      content: "\2191";  /* Unicode arrow */
       display: inline-block;
       margin-right: 5px;
       color: #283c86;
+      font-family: Arial, sans-serif;
     }
     
-    /* Медия заявки за мобилни устройства */
     @media (max-width: 600px) {
-      .overlay h1 {
-        font-size: 2.5em;
-      }
-      .overlay p {
-        font-size: 1.2em;
-      }
-      /* Adjust hotspot size for smaller screens */
       .hotspot {
         width: 25vw;
         height: 25vw;
@@ -194,7 +200,7 @@
     <div class="layer mid"></div>
     <div class="layer near"></div>
 
-    <!-- Интерактивни "горещи" точки с изображения и етикет "Натисни ме" -->
+    <!-- Горещи точки -->
     <div class="hotspot" id="hotspot1" style="top: 60%; left: 20%;">
       <img src="mystery.jpg" alt="Фото 1">
       <div class="press-sign">Натисни ме</div>
@@ -208,7 +214,7 @@
       <div class="press-sign">Натисни ме</div>
     </div>
 
-    <!-- Оверлей с инструкции -->
+    <!-- Инструкции -->
     <div class="overlay" id="instructionOverlay">
       <h1>Здравей, Мим!</h1>
       <p>
@@ -218,7 +224,7 @@
       <button id="startBtn">Започни приключението</button>
     </div>
 
-    <!-- Оверлей за показване на историята (първоначално скрит) -->
+    <!-- История/финално пожелание -->
     <div class="overlay hidden" id="storyOverlay">
       <h1 id="storyTitle"></h1>
       <p id="storyText"></p>
@@ -227,7 +233,7 @@
   </div>
 
   <script>
-    // Получаваме елементите
+    // Извличаме елементите
     const instructionOverlay = document.getElementById('instructionOverlay');
     const storyOverlay = document.getElementById('storyOverlay');
     const startBtn = document.getElementById('startBtn');
@@ -236,11 +242,11 @@
     const storyText = document.getElementById('storyText');
     const hotspots = document.querySelectorAll('.hotspot');
 
-    // Определяме реда на горещите точки по ID
+    // Определяме реда на горещите точки
     const hotspotOrder = ['hotspot1', 'hotspot2', 'hotspot3'];
     let discovered = [];
 
-    // Функция за показване на "Натисни ме" етикет за дадена точка
+    // Показване/скриване на етикета "Натисни ме"
     function showPressSign(hotspotId) {
       const hotspot = document.getElementById(hotspotId);
       const sign = hotspot.querySelector('.press-sign');
@@ -248,8 +254,6 @@
         sign.style.display = 'block';
       }
     }
-
-    // Функция за скриване на "Натисни ме" етикета за дадена точка
     function hidePressSign(hotspotId) {
       const hotspot = document.getElementById(hotspotId);
       const sign = hotspot.querySelector('.press-sign');
@@ -258,39 +262,30 @@
       }
     }
 
-    // Стартиране на приключението: скриваме инструкциите, показваме всички точки и активираме слушатели
+    // Стартиране на приключението
     startBtn.addEventListener('click', () => {
       instructionOverlay.classList.add('hidden');
       hotspots.forEach(hotspot => {
         hotspot.style.display = 'flex';
         hotspot.addEventListener('click', hotspotClick);
       });
-      // Показваме "Натисни ме" за първата точка
+      // Показваме етикет за първата точка
       showPressSign(hotspotOrder[0]);
     });
 
-    // Функция, която обработва кликовете върху горещите точки
+    // Обработка на клик върху гореща точка
     function hotspotClick(e) {
       const clickedId = e.currentTarget.id;
-
-      // Проверяваме дали кликнатата точка е следващата в реда.
-      if (clickedId !== hotspotOrder[discovered.length]) {
-        // Ако не е, игнорирайте клика или покажете съобщение, ако желаете.
-        return;
-      }
-
+      if (clickedId !== hotspotOrder[discovered.length]) return; // Игнориране, ако не е в правилния ред
       discovered.push(clickedId);
       hidePressSign(clickedId);
-      // Използваме реда на кликванията, за да изберем правилната "глава"
       showChapter(chapters[discovered.length - 1]);
-
-      // Ако има следваща точка, показваме нейния "Натисни ме" етикет
       if (discovered.length < hotspotOrder.length) {
         showPressSign(hotspotOrder[discovered.length]);
       }
     }
 
-    // Масив със "глави" (истории) за всяка гореща точка – в приказен стил
+    // Глави (истории) за всяка точка
     const chapters = [
       { 
         title: "Приказка за Златното Слънце в Турция", 
@@ -306,7 +301,7 @@
       }
     ];
 
-    // Функция за показване на главата (историята)
+    // Показване на глава/история
     function showChapter(chapter) {
       storyTitle.textContent = chapter.title;
       storyText.textContent = chapter.text;
@@ -314,11 +309,12 @@
     }
 
     nextBtn.addEventListener('click', () => {
-      // Ако са открити всички глави, показваме финалното пожелание
+      // При финално пожелание
       if (discovered.length >= chapters.length) {
         hotspots.forEach(hotspot => hotspot.style.display = 'none');
+        // Добавяме клас за финално пожелание, за да се подреди съдържанието отгоре
+        storyOverlay.classList.add('final-message');
         storyTitle.textContent = "Честит рожден ден, Мим!";
-        // Use innerHTML with a wrapping div to render the paragraphs normally (not gigantic)
         storyText.innerHTML = `
 <div class="final-wish-text">
   <p>Въпреки че тази година няма да мога да те изненадам както ми се искаше, искам да ти пожелая нещо наистина специално. Познаваме се от дълго време, а макар и вече да не сме толкова близки, ти винаги ще останеш човек, на когото имам пълно доверие. Научи ме на много неща в живота, които никога няма да забравя.</p>
@@ -335,12 +331,12 @@
 
   <p>Радвам се, че си част от живота ми, защото приятелството ти ме промени най-много – и то само към по-добро.</p>
 
-  <p>Бъди ❤️ щастлива!</p>
+  <p>Бъди щастлива!❤️</p>
 </div>
         `;
         nextBtn.style.display = 'none';
       } else {
-        // Скриваме историята и връщаме потребителя към гората
+        // За главите, връщаме потребителя към гората
         storyOverlay.classList.add('hidden');
       }
     });
