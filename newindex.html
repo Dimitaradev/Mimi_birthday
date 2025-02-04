@@ -1,0 +1,297 @@
+<!DOCTYPE html> 
+<html lang="bg">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  
+  <title>Празнично Приключение: Вълшебната Гора</title>
+  <!-- Google Fonts за изискан вид -->
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Great+Vibes&display=swap" rel="stylesheet">
+  <style>
+    /* Основен ресет */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Montserrat', sans-serif;
+    }
+    /* Контейнер за сцената с градиентен фон */
+    .scene {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(120deg, #283c86, #45a247);
+      overflow: hidden;
+    }
+    /* Стилове за паралакс слоевете */
+    .layer {
+      position: absolute;
+      width: 110%;
+      height: 110%;
+      top: -5%;
+      left: -5%;
+      background-size: cover;
+      background-position: center;
+      pointer-events: none;
+      animation: float 10s ease-in-out infinite alternate;
+    }
+    @keyframes float {
+      from { transform: translateY(0px); }
+      to { transform: translateY(-20px); }
+    }
+    .layer.far {
+      background-image: url('https://via.placeholder.com/1200x800/6a89cc/ffffff?text=Далечни+Дървета');
+      z-index: 1;
+      opacity: 0.7;
+    }
+    .layer.mid {
+      background-image: url('https://via.placeholder.com/1200x800/82ccdd/ffffff?text=Средни+Дървета');
+      z-index: 2;
+      opacity: 0.8;
+    }
+    .layer.near {
+      background-image: url('https://via.placeholder.com/1200x800/ffc048/ffffff?text=Преден+План');
+      z-index: 3;
+      opacity: 0.9;
+    }
+    /* Стилове за припокриващите се прозорци (оверлеи) */
+    .overlay {
+      position: absolute;
+      z-index: 10;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #fff;
+      padding: 20px;
+      transition: opacity 0.5s;
+    }
+    .overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+    .overlay h1 {
+      font-family: 'Great Vibes', cursive;
+      font-size: 4em;
+      margin-bottom: 20px;
+      text-shadow: 2px 2px 8px rgba(0,0,0,0.7);
+    }
+    .overlay p {
+      font-size: 1.5em;
+      margin-bottom: 30px;
+      max-width: 90%;
+    }
+    .overlay button {
+      padding: 15px 30px;
+      font-size: 1.2em;
+      background: #ff6f91;
+      border: none;
+      border-radius: 30px;
+      color: #fff;
+      cursor: pointer;
+      box-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+      transition: background 0.3s;
+    }
+    .overlay button:hover {
+      background: #ff3e70;
+    }
+    @media (max-width: 600px) {
+        .overlay h1 {
+          font-size: 2.5em;
+        }
+        .overlay p {
+          font-size: 1.2em;
+        }
+        /* Adjust positions and sizes of hotspots if needed */
+        .hotspot {
+          width: 60px;
+          height: 60px;
+        }
+      }
+      
+    /* Стилове за интерактивните "горещи" точки */
+    .hotspot {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border: 3px solid #ff6f91;
+      border-radius: 50%;
+      cursor: pointer;
+      display: none; /* Първоначално скрити */
+      overflow: hidden;
+      transition: transform 0.3s;
+      z-index: 5;
+    }
+    .hotspot:hover {
+      transform: scale(1.2);
+    }
+    /* Стилизиране на изображението вътре в горещата точка */
+    .hotspot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    /* Стил за етикета "Натисни ме" извън снимката */
+    .press-sign {
+      position: absolute;
+      top: 100%; /* под контейнера */
+      left: 50%;
+      transform: translate(-50%, 10px); /* леко разстояние надолу */
+      background: rgba(255, 255, 255, 0.9);
+      padding: 4px 10px;
+      border-radius: 5px;
+      font-size: 0.8em;
+      color: #283c86;
+      white-space: nowrap;
+      display: none; /* първоначално скрит, ще се показва за активната точка */
+    }
+    /* Добавяне на стрелка чрез псевдо-елемент към етикета */
+    .press-sign::before {
+      content: "↑";
+      display: inline-block;
+      margin-right: 5px;
+      color: #283c86;
+    }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <!-- Паралакс слоеве -->
+    <div class="layer far"></div>
+    <div class="layer mid"></div>
+    <div class="layer near"></div>
+
+    <!-- Интерактивни "горещи" точки с изображения и етикет "Натисни ме" -->
+    <div class="hotspot" id="hotspot1" style="top: 60%; left: 20%;">
+      <img src="mystery.jpg" alt="Фото 1">
+      <div class="press-sign">Натисни ме</div>
+    </div>
+    <div class="hotspot" id="hotspot2" style="top: 20%; left: 40%;">
+      <img src="sofia.jpg" alt="Фото 2">
+      <div class="press-sign">Натисни ме</div>
+    </div>
+    <div class="hotspot" id="hotspot3" style="top: 50%; left: 65%;">
+      <img src="nachaloto.jpg" alt="Фото 3">
+      <div class="press-sign">Натисни ме</div>
+    </div>
+
+    <!-- Оверлей с инструкции -->
+    <div class="overlay" id="instructionOverlay">
+      <h1>Здравей, Мим!</h1>
+      <p>
+        Добре дошла във вълшебната гора! Тук ще откриеш скрити послания и приказки, вдъхновени от незабравими мигове, които са преплели съдбите ни. <br>
+        Натисни върху горещите точки, за да отключиш тайните на нашата приказка.
+      </p>
+      <button id="startBtn">Започни приключението</button>
+    </div>
+
+    <!-- Оверлей за показване на историята (първоначално скрит) -->
+    <div class="overlay hidden" id="storyOverlay">
+      <h1 id="storyTitle"></h1>
+      <p id="storyText"></p>
+      <button id="nextBtn">Следваща част</button>
+    </div>
+  </div>
+
+  <script>
+    // Получаваме елементите
+    const instructionOverlay = document.getElementById('instructionOverlay');
+    const storyOverlay = document.getElementById('storyOverlay');
+    const startBtn = document.getElementById('startBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const storyTitle = document.getElementById('storyTitle');
+    const storyText = document.getElementById('storyText');
+    const hotspots = document.querySelectorAll('.hotspot');
+
+    // Определяме реда на горещите точки по ID
+    const hotspotOrder = ['hotspot1', 'hotspot2', 'hotspot3'];
+    let discovered = [];
+
+    // Функция за показване на "Натисни ме" етикет за дадена точка
+    function showPressSign(hotspotId) {
+      const hotspot = document.getElementById(hotspotId);
+      const sign = hotspot.querySelector('.press-sign');
+      if (sign) {
+        sign.style.display = 'block';
+      }
+    }
+
+    // Функция за скриване на "Натисни ме" етикета за дадена точка
+    function hidePressSign(hotspotId) {
+      const hotspot = document.getElementById(hotspotId);
+      const sign = hotspot.querySelector('.press-sign');
+      if (sign) {
+        sign.style.display = 'none';
+      }
+    }
+
+    // Стартиране на приключението: скриваме инструкциите, показваме всички точки и активираме слушатели
+    startBtn.addEventListener('click', () => {
+      instructionOverlay.classList.add('hidden');
+      hotspots.forEach(hotspot => {
+        hotspot.style.display = 'flex';
+        hotspot.addEventListener('click', hotspotClick);
+      });
+      // Показваме "Натисни ме" за първата точка
+      showPressSign(hotspotOrder[0]);
+    });
+
+    function hotspotClick(e) {
+      const clickedId = e.currentTarget.id;
+      if (!discovered.includes(clickedId)) {
+        discovered.push(clickedId);
+        // Скриваме етикета "Натисни ме" на текущата точка
+        hidePressSign(clickedId);
+        // Показваме историята, съответстваща на поредния етап
+        showChapter(chapters[discovered.length - 1]);
+        // Ако има следваща точка, показваме нейния "Натисни ме" етикет
+        if (discovered.length < hotspotOrder.length) {
+          showPressSign(hotspotOrder[discovered.length]);
+        }
+      }
+    }
+
+    // Масив със "глави" (истории) за всяка гореща точка – в приказен стил
+    const chapters = [
+      { 
+        title: "Приказка за Златното Слънце в Турция", 
+        text: "В земите на топлите слънчеви лъчи и весели морски бризове, нашето пътешествие в Турция се превърна в истинска приказка. Сред златните пясъци и шумоленето на вълните, се роди една весела история – изпълнена със смях, игри и незабравими моменти, които озариха началото на нашето приятелство." 
+      },
+      { 
+        title: "Сиянието на Софийската Зора", 
+        text: "Първият ден в София се разпали като искрица от радост и нови възможности. Сред оживените улици и усмихнатите лица, всяка крачка беше като нота във весела мелодия, която разказваше за споделени мечти, взаимна подкрепа и истинско веселие." 
+      },
+      { 
+        title: "Вечният Танц на Приятелството", 
+        text: "С течение на времето нашите пътища се вплитаха в една приказка от смях, игри и малки чудеса. Заедно преминавахме през бурни ветрове и тихи, дъждовни дни, оставящи след себе си следи от трудности, но и учейки ни да бъдем по-силни. Тихо, из-под всяка весела усмивка и сияещ изгрев, стоеше моето тихо обещание – винаги да бъда до теб, да споделям радостите и да помагам, когато пътят стане труден." 
+      }
+    ];
+
+    function showChapter(chapter) {
+      storyTitle.textContent = chapter.title;
+      storyText.textContent = chapter.text;
+      storyOverlay.classList.remove('hidden');
+    }
+
+    nextBtn.addEventListener('click', () => {
+      // Ако са открити всички глави, показваме финалното пожелание
+      if (discovered.length >= chapters.length) {
+        hotspots.forEach(hotspot => hotspot.style.display = 'none');
+        storyTitle.textContent = "Честит рожден ден, Мим!";
+        storyText.textContent = `пожеланието тук`;
+        nextBtn.style.display = 'none';
+      } else {
+        // Скриваме историята и връщаме потребителя към гората
+        storyOverlay.classList.add('hidden');
+      }
+    });
+  </script>
+</body>
+</html>
